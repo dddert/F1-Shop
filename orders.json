@@ -1,0 +1,12 @@
+[
+    {
+        "id": 1,
+        "name": "Андрей",
+        "lastname": "Волков",
+        "email": "volkovandrew6b@gmail.com",
+        "phone": "+79207287107",
+        "package": "track-day",
+        "color": "Заводская текстура",
+        "engineer": "Да"
+    }
+]

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель управления | MONO.RACE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #070709;
+            --accent-color: #ff0044;
+            --text-color: #ffffff;
+            --muted-color: #6c6c75;
+            --panel-bg: rgba(255, 255, 255, 0.02);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; padding: 60px 80px; }
+
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+        .admin-header h1 { font-family: 'Orbitron', sans-serif; font-size: 2rem; letter-spacing: 2px; }
+        .admin-header h1 span { color: var(--accent-color); }
+        .back-btn { color: var(--muted-color); text-decoration: none; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; border: 1px solid var(--border-color); padding: 10px 20px; }
+        .back-btn:hover { color: white; border-color: white; }
+
+        .stats { display: flex; gap: 30px; margin-bottom: 40px; }
+        .stat-card { background: var(--panel-bg); border-left: 3px solid var(--accent-color); padding: 20px 40px; border-radius: 2px; }
+        .stat-card .label { font-size: 0.75rem; text-transform: uppercase; color: var(--muted-color); letter-spacing: 1px; }
+        .stat-card .value { font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 700; margin-top: 5px; }
+
+        table { width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.01); margin-top: 20px; }
+        th, td { padding: 18px 20px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.95rem; }
+        th { font-family: 'Orbitron', sans-serif; font-size: 0.8rem; color: var(--muted-color); letter-spacing: 1px; text-transform: uppercase; background: rgba(255,255,255,0.02); }
+        tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+        .tag { display: inline-block; padding: 4px 10px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; font-weight: 700; border-radius: 2px; }
+        .tag-package { background: rgba(255, 0, 68, 0.1); color: var(--accent-color); border: 1px solid rgba(255, 0, 68, 0.2); }
+        .tag-engineer { background: rgba(0, 255, 200, 0.1); color: #00ffcc; }
+
+        .empty-state { text-align: center; padding: 100px 0; color: var(--muted-color); font-family: 'Orbitron', sans-serif; font-size: 1.2rem; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-header">
+        <h1>MONO.ADMIN<span>//</span></h1>
+        <a href="/" class="back-btn">< BACK TO SITE</a>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="label">Всего обработано лидов</div>
+            <div class="value">{{ orders|length }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Общая сумма пула (потенциальная)</div>
+            <div class="value">${{ "{:.1f}".format(orders|length * 18.5) }}M</div>
+        </div>
+    </div>
+
+    {% if orders %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Клиент</th>
+                <th>Контакты</th>
+                <th>Комплектация</th>
+                <th>Цвет ливреи</th>
+                <th>Инженер</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td style="font-family: 'Orbitron', sans-serif; color: var(--accent-color);">#{{ "%03d"|format(order.id) }}</td>
+                <td><b>{{ order.name }} {{ order.lastname }}</b></td>
+                <td>
+                    <div>{{ order.email }}</div>
+                    <div style="color: var(--muted-color); font-size: 0.85rem; margin-top: 4px;">{{ order.phone }}</div>
+                </td>
+                <td><span class="tag tag-package">{{ order.package }}</span></td>
+                <td>{{ order.color }}</td>
+                <td><span class="tag {% if order.engineer == 'Да' %}tag-engineer{% endif %}">{{ order.engineer }}</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        [ ОЖИДАНИЕ ПЕРВЫХ ЗАЯВОК ОТ МИЛЛИАРДЕРОВ... ]
+    </div>
+    {% endif %}
+
+</body>
+</html>

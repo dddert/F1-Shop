@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оформление Заявки | {{ car.name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0d;
+            --accent-color: #ff0044;
+            --text-color: #ffffff;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; }
+
+        /* Задний фон с полосами */
+        body::before {
+            content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
+            background: linear-gradient(90deg, rgba(255,0,68,0.03) 1px, transparent 1px), linear-gradient(rgba(255,0,68,0.03) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: 1; pointer-events: none;
+        }
+
+        .back-home { position: absolute; top: 40px; left: 40px; color: white; text-decoration: none; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; letter-spacing: 2px; z-index: 10;}
+        .back-home:hover { color: var(--accent-color); }
+
+        .form-container { width: 100%; max-width: 700px; background: rgba(13, 13, 18, 0.85); border: 1px solid var(--border-color); padding: 60px; z-index: 5; backdrop-filter: blur(20px); border-radius: 2px;}
+
+        .header-box { text-align: center; margin-bottom: 45px; }
+        .header-box h1 { font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 900; letter-spacing: 2px; margin-bottom: 10px;}
+        .header-box p { color: #6c6c75; font-size: 0.95rem; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .full-width { grid-column: span 2; }
+
+        .field-group { display: flex; flex-direction: column; }
+        .field-group label { font-size: 0.75rem; text-transform: uppercase; font-family: 'Orbitron', sans-serif; color: #8c8c95; margin-bottom: 8px; letter-spacing: 1px; }
+
+        .field-group input, .field-group select {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 15px; color: white; font-size: 1rem; transition: 0.3s;
+        }
+        .field-group input:focus, .field-group select:focus { border-color: var(--accent-color); outline: none; background: rgba(255,255,255,0.06); }
+
+        /* Кастомный чекбокс */
+        .checkbox-group { display: flex; align-items: center; gap: 12px; margin-top: 10px; cursor: pointer; }
+        .checkbox-group input { width: 20px; height: 20px; accent-color: var(--accent-color); }
+        .checkbox-group span { font-size: 0.9rem; color: #acacb5; }
+
+        .submit-btn {
+            background: var(--accent-color); color: white; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 900;
+            padding: 20px; width: 100%; border: none; cursor: pointer; letter-spacing: 2px; margin-top: 35px; transition: 0.3s;
+        }
+        .submit-btn:hover { background: #ff1a57; box-shadow: 0 0 30px rgba(255,0,68,0.5); }
+    </style>
+</head>
+<body>
+
+    <a href="/" class="back-home">На Главную</a>
+
+    <div class="form-container">
+        <div class="header-box">
+            <h1>ЗАКРЫТЫЙ ПРЕДЗАКАЗ</h1>
+            <p>Заявка на приобретение шасси {{ car.name }}</p>
+        </div>
+
+        <form id="secure-order-form">
+            <div class="form-grid">
+                <div class="field-group">
+                    <label>Имя</label>
+                    <input type="text" id="firstname" required placeholder="Брюс">
+                </div>
+                <div class="field-group">
+                    <label>Фамилия</label>
+                    <input type="text" id="lastname" required placeholder="Уэйн">
+                </div>
+                <div class="field-group">
+                    <label>Электронная почта</label>
+                    <input type="email" id="email" required placeholder="wayne@ind.com">
+                </div>
+                <div class="field-group">
+                    <label>Телефон (Secure Line)</label>
+                    <input type="tel" id="phone" required placeholder="+1 (555) 900-0900">
+                </div>
+                <div class="field-group full-width">
+                    <label>Пакет комплектации</label>
+                    <select id="package">
+                        <option value="track-day">Track-Day Edition (Базовая телеметрия)</option>
+                        <option value="apex-collector">Apex Collector (Карбоновые стенды + Ливрея от Студии)</option>
+                        <option value="world-champion">World Champion Spec (Форсированный мотор, без ограничений)</option>
+                    </select>
+                </div>
+                <div class="field-group full-width">
+                    <label>Желаемый цвет ливреи</label>
+                    <input type="text" id="color-name" required placeholder="Например: Глянцевый Черный или Заводская текстура">
+                </div>
+                <div class="field-group full-width checkbox-group">
+                    <input type="checkbox" id="engineer-support">
+                    <span>Включить годовую поддержку личного трек-инженера</span>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">ОТПРАВИТЬ НА ВЕРИФИКАЦИЮ</button>
+        </form>
+    </div>
+
+    <script>
+        document.querySelector('#secure-order-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const payload = {
+                name: document.querySelector('#firstname').value,
+                lastname: document.querySelector('#lastname').value,
+                email: document.querySelector('#email').value,
+                phone: document.querySelector('#phone').value,
+                package: document.querySelector('#package').value,
+                color: document.querySelector('#color-name').value,
+                engineer: document.querySelector('#engineer-support').checked
+            };
+
+            const response = await fetch('/api/preorder', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+            alert(result.message);
+            window.location.href = '/'; // Возврат на главную после отправки
+        });
+    </script>
+</body>
+</html>
